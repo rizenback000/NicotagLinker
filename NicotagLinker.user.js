@@ -7,16 +7,19 @@
 // ==/UserScript==
 
 (function() {
-  const VERSION = "1.0.0";
+  const VERSION = "1.0.1";
   const JUMP_TEXT = "[動画へのリンク] ";
-  
+
   //Flash版
   var vheader = document.getElementById("videoMenuWrapper");
   var tags = document.getElementsByClassName("videoHeaderTagLink");
+  var relPath = "watch/";
+
   //HTML5版
   if (vheader == null) {
     vheader = document.getElementsByClassName("MainContainer")[0];
     tags = document.getElementsByClassName("TagItem-name");
+    relPath = "";
   }
 
   var jumpDiv = document.createElement("div");
@@ -27,7 +30,7 @@
       var jumpLink = document.createElement("a");
       jumpDiv.appendChild(jumpLink);
       jumpLink.text = tags[i].textContent;
-      jumpLink.href = "watch/" + RegExp.$1;
+      jumpLink.href = relPath + RegExp.$1;
       jumpLink.style.marginRight = "1em";
     }
   }
