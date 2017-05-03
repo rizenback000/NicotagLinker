@@ -7,6 +7,7 @@
 // ==/UserScript==
 
 (function() {
+  const SCRIPT_NAME = "NicoTagLinker";
   const VERSION = "1.0.1";
   const JUMP_TEXT = "[動画へのリンク] ";
 
@@ -14,25 +15,66 @@
   var vheader = document.getElementById("videoMenuWrapper");
   var tags = document.getElementsByClassName("videoHeaderTagLink");
   var relPath = "watch/";
+  var obsTgt = document.getElementById("videoHeaderTagList");
 
   //HTML5版
   if (vheader == null) {
     vheader = document.getElementsByClassName("MainContainer")[0];
     tags = document.getElementsByClassName("TagItem-name");
     relPath = "";
+    obsTgt = document.getElementsByClassName("TagList")[0];
   }
 
-  var jumpDiv = document.createElement("div");
-  jumpDiv.textContent = JUMP_TEXT;
+  //リンク生成
+  function InitLinker() {
+    var jumpId = SCRIPT_NAME + "_container";
+    var jumpDiv = document.getElementById(jumpId);
 
-  for (var i = 0; i < tags.length; i++) {
-    if (/([sn]m\d+)/.test(tags[i].textContent)) {
-      var jumpLink = document.createElement("a");
-      jumpDiv.appendChild(jumpLink);
-      jumpLink.text = tags[i].textContent;
-      jumpLink.href = relPath + RegExp.$1;
-      jumpLink.style.marginRight = "1em";
+    //既に作成済みなら一回削除してコンテナを作り直す
+    if (jumpDiv != null) {
+      jumpDiv.parentNode.removeChild(jumpDiv);
     }
+    jumpDiv = document.createElement("div");
+    jumpDiv.id = jumpId;
+
+    for (var i = 0; i < tags.length; i++) {
+      if (/([sn]m\d+)/.test(tags[i].textContent)) {
+        var jumpLink = document.createElement("a");
+        jumpLink.textContent = tags[i].textContent;
+        jumpLink.href = relPath + RegExp.$1;
+        jumpLink.style.marginRight = "1em";
+        jumpDiv.appendChild(jumpLink);
+      }
+    }
+    if (jumpDiv.childElementCount) {
+      jumpDiv.insertBefore(document.createTextNode(JUMP_TEXT), jumpDiv.firstChild);
+    }
+    vheader.parentNode.insertBefore(jumpDiv, vheader);
   }
-  vheader.parentNode.insertBefore(jumpDiv, vheader);
+
+  //FLASH版はページ毎読み込まないのでMutationObserverでタグ更新を監視
+  var refreshFlg = false;
+  var observer = new MutationObserver(function(mutations) {
+    console.log(mutations);
+    mutations.forEach(function(mutation) {
+      refreshFlg = true;
+    });
+
+    if (refreshFlg) {
+      InitLinker();
+      refreshFlg = false;
+    }
+  });
+
+  // オブザーバの設定
+  var config = {
+    attributes: true,
+    childList: true,
+    characterData: true
+  };
+
+  // 対象ノードとオブザーバの設定を渡す
+  observer.observe(obsTgt, config);
+  InitLinker();
+  //observer.disconnect();
 })();
