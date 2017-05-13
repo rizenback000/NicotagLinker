@@ -11,10 +11,10 @@
   const JUMP_TEXT = "[動画へのリンク] ";
 
   //Flash版
-  var relPath = "watch/";
-  var vheader = document.getElementById("videoMenuWrapper");
-  var tags = document.getElementsByClassName("videoHeaderTagLink");
-  var obsTgt = document.getElementById("videoHeaderTagList");
+  let relPath = "watch/";
+  let vheader = document.getElementById("videoMenuWrapper");
+  let tags = document.getElementsByClassName("videoHeaderTagLink");
+  let obsTgt = document.getElementById("videoHeaderTagList");
 
   //HTML5版
   if (vheader == null) {
@@ -26,8 +26,8 @@
 
   //リンク生成
   function InitLinker() {
-    var jumpId = GM_info.script.name + "_container";
-    var jumpDiv = document.getElementById(jumpId);
+    const jumpId = GM_info.script.name + "_container";
+    let jumpDiv = document.getElementById(jumpId);
 
     //既に作成済みなら一回削除してコンテナを作り直す
     if (jumpDiv != null) {
@@ -36,9 +36,9 @@
     jumpDiv = document.createElement("div");
     jumpDiv.id = jumpId;
 
-    for (var i = 0; i < tags.length; i++) {
+    for (let i = 0; i < tags.length; i++) {
       if (/([sn]m\d+)/.test(tags[i].textContent)) {
-        var jumpLink = document.createElement("a");
+        const jumpLink = document.createElement("a");
         jumpLink.textContent = tags[i].textContent;
         jumpLink.href = relPath + RegExp.$1;
         jumpLink.style.marginRight = "1em";
@@ -52,8 +52,8 @@
   }
 
   //FLASH版はページ毎読み込まないのでMutationObserverでタグ更新を監視
-  var refreshFlg = false;
-  var observer = new MutationObserver(function(mutations) {
+  let refreshFlg = false;
+  const observer = new MutationObserver(function(mutations) {
     mutations.forEach(function(mutation) {
       refreshFlg = true;
     });
@@ -65,7 +65,7 @@
   });
 
   // オブザーバの設定
-  var config = {
+  const config = {
     attributes: true,
     childList: true,
     characterData: true
