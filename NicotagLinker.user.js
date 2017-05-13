@@ -3,18 +3,17 @@
 // @namespace      http://unote.hatenablog.com/
 // @description    ニコ動のタグに設定された動画IDをリンクとして抽出する
 // @include        http://www.nicovideo.jp/watch/*
-// @grant none
+// @version        1.1.1
+// @grant GM_info
 // ==/UserScript==
 
 (function() {
-  const SCRIPT_NAME = "NicoTagLinker";
-  const VERSION = "1.1.0";
   const JUMP_TEXT = "[動画へのリンク] ";
 
   //Flash版
+  var relPath = "watch/";
   var vheader = document.getElementById("videoMenuWrapper");
   var tags = document.getElementsByClassName("videoHeaderTagLink");
-  var relPath = "watch/";
   var obsTgt = document.getElementById("videoHeaderTagList");
 
   //HTML5版
@@ -27,7 +26,7 @@
 
   //リンク生成
   function InitLinker() {
-    var jumpId = SCRIPT_NAME + "_container";
+    var jumpId = GM_info.script.name + "_container";
     var jumpDiv = document.getElementById(jumpId);
 
     //既に作成済みなら一回削除してコンテナを作り直す
@@ -55,7 +54,6 @@
   //FLASH版はページ毎読み込まないのでMutationObserverでタグ更新を監視
   var refreshFlg = false;
   var observer = new MutationObserver(function(mutations) {
-    console.log(mutations);
     mutations.forEach(function(mutation) {
       refreshFlg = true;
     });
