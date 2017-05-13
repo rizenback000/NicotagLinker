@@ -24,7 +24,12 @@
     obsTgt = document.getElementsByClassName("TagList")[0];
   }
 
-  //リンク生成
+
+  /**
+   * InitLinker - タグからリンク生成
+   *
+   * @return {void}
+   */
   function InitLinker() {
     const jumpId = GM_info.script.name + "_container";
     let jumpDiv = document.getElementById(jumpId);
@@ -51,28 +56,31 @@
     vheader.parentNode.insertBefore(jumpDiv, vheader);
   }
 
-  //FLASH版はページ毎読み込まないのでMutationObserverでタグ更新を監視
-  let refreshFlg = false;
-  const observer = new MutationObserver(function(mutations) {
-    mutations.forEach(function(mutation) {
-      refreshFlg = true;
+
+  /**
+   * TagObserv - タグの更新を監視して更新があればリンク生成
+   *
+   * @return {void}
+   */
+  function TagObserv() {
+    //FLASH版はページ毎読み込まないのでMutationObserverでタグ更新を監視
+    const observer = new MutationObserver(function(mutations) {
+      InitLinker();
     });
 
-    if (refreshFlg) {
-      InitLinker();
-      refreshFlg = false;
-    }
-  });
+    // オブザーバの設定
+    const config = {
+      attributes: true,
+      childList: true,
+      characterData: true
+    };
 
-  // オブザーバの設定
-  const config = {
-    attributes: true,
-    childList: true,
-    characterData: true
-  };
+    // 対象ノードとオブザーバの設定を渡す
+    observer.observe(obsTgt, config);
+    //observer.disconnect();
+  }
 
-  // 対象ノードとオブザーバの設定を渡す
-  observer.observe(obsTgt, config);
+  TagObserv();
   InitLinker();
-  //observer.disconnect();
+
 })();
