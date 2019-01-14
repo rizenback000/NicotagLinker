@@ -2,8 +2,8 @@
 // @name           Nicotag Linker
 // @namespace      http://unote.hatenablog.com/
 // @description    ニコ動のタグに設定された動画IDをリンクとして抽出する
-// @include        http://www.nicovideo.jp/watch/*
-// @version        1.1.1
+// @include        http*://www.nicovideo.jp/watch/*
+// @version        1.1.2
 // @grant GM_info
 // ==/UserScript==
 
